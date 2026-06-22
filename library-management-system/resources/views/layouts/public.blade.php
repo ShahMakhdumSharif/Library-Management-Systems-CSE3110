@@ -94,11 +94,26 @@
             font-weight: 600;
         }
 
-        .login-link {
+        .auth-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .login-link,
+        .register-link {
             padding: 10px 16px;
+            border: 1px solid var(--crimson);
+            font-weight: 700;
+        }
+
+        .login-link {
             color: var(--white);
             background: var(--crimson);
-            font-weight: 700;
+        }
+
+        .register-link {
+            color: var(--crimson);
+            background: var(--white);
         }
 
         main {
@@ -262,6 +277,16 @@
             line-height: 1.5;
         }
 
+        .status-message {
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border-left: 4px solid var(--crimson);
+            background: var(--soft);
+            color: var(--ink);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
         .site-footer {
             border-top: 1px solid var(--line);
             background: #171717;
@@ -337,7 +362,10 @@
                 <a href="#">Collections</a>
                 <a href="#">Services</a>
                 <a href="#">Reports</a>
-                <a class="login-link" href="{{ url('/login') }}">Login</a>
+                <span class="auth-links">
+                    <a class="login-link" href="{{ url('/login') }}">Login</a>
+                    <a class="register-link" href="{{ url('/register') }}">Register</a>
+                </span>
             </nav>
         </div>
     </header>
@@ -365,8 +393,7 @@
             <section>
                 <h3>Account</h3>
                 <a href="{{ url('/login') }}">Login</a>
-                <a href="#">Member Access</a>
-                <a href="#">Staff Access</a>
+                <a href="{{ url('/register') }}">Register</a>
             </section>
         </div>
         <div class="container copyright">
