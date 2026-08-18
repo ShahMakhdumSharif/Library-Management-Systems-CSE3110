@@ -13,7 +13,9 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    public $timestamps = false;
+    public $timestamps = true;
+
+    public const UPDATED_AT = null;
 
     /**
      * The attributes that are mass assignable.
@@ -47,5 +49,22 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    public function isStaff(): bool
+    {
+        return in_array($this->roleName(), ['Admin', 'Librarian'], true);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->roleName() === 'Admin';
+    }
+
+    public function roleName(): ?string
+    {
+        return \Illuminate\Support\Facades\DB::table('roles')
+            ->where('id', $this->role_id)
+            ->value('role_name');
     }
 }
