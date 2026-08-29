@@ -1,59 +1,57 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Central Library Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel 12 and Oracle library application for CSE 3110 Database Systems Lab. The interface is inspired by the spacious editorial style, crimson accent, serif headings, and clear service navigation of Harvard Library without copying its branding.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Admin, Librarian, and Member role-based access
+- Secure registration, login, logout, and database sessions
+- Book, author/category detail, copy, and branch management
+- Catalog search by title, author, category, or ISBN
+- Book issue/return with automatic 14-day due dates
+- Reservation queue and member notifications
+- Automatic overdue fines at Tk 5 per day
+- Inventory, overdue-loan, and outstanding-fine reports
+- Responsive and accessible public/member/staff interfaces
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Local setup
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Requirements: PHP 8.2+, Composer, Oracle Instant Client, the PHP `oci8` extension, SQL*Plus, and Oracle XE 21c.
 
-## Learning Laravel
+```bash
+cp .env.example .env
+composer install
+php artisan key:generate
+sqlplus library_user/library_password@localhost:1521/XEPDB1 @database/oracle/schema.sql
+php artisan serve
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Open `http://127.0.0.1:8000`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The project has only one database connection: Oracle. Schema creation and sample data are handled exclusively by [`database/oracle/schema.sql`](database/oracle/schema.sql); Laravel migrations, SQLite, MySQL, PostgreSQL, SQL Server, and MariaDB configurations are intentionally absent.
 
-## Laravel Sponsors
+The Oracle script includes DDL, DML, primary/foreign/check constraints, sequences, joins, transactions, PL/SQL conditionals, a cursor loop, procedures, a function, triggers, sample data, and report views. These constructs are limited to topics demonstrated in the supplied CSE 3110 lab ZIP.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+To replace an older project schema, run the Oracle-only reset script instead:
 
-### Premium Partners
+```bash
+sqlplus library_user/library_password@localhost:1521/XEPDB1 @database/oracle/reset.sql
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+`reset.sql` permanently removes the existing Central Library tables and data before rebuilding them.
 
-## Contributing
+Sample accounts (all use the password `password`):
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Role | Email |
+| --- | --- |
+| Admin | `admin@library.test` |
+| Librarian | `librarian@library.test` |
+| Member | `member@library.test` |
 
-## Code of Conduct
+## Tests
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Tests are Oracle integration tests. They use the Oracle Server configured in `.env` and verify the Oracle connection, required tables, and PL/SQL object validity:
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan test
+```
